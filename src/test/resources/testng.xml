@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE suite SYSTEM "http://beust.com/testng/testng-1.0.dtd" >
+<suite name="promotion test">
+	<test name="unit test">
+		<packages> 
+		      <package name="com.wenrc.reward.*" />
+		</packages>
+		<classes>
+		</classes>
+	</test>
+</suite>

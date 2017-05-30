@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wenrc.reward.dao.RoleDao">
+	<select id="queryByUserId" resultType="com.wenrc.reward.entity.Role">
+		<include refid="query_join_body"/>
+		<include refid="query_by_user_id_condition"/>
+	</select>
+
+	<sql id="query_join_body">
+		SELECT a.*
+		FROM sys_role a, sys_user_role b, sys_user c
+		WHERE a.id = b.roleId
+			AND b.userId = c.id
+	</sql>
+
+	<sql id="query_by_user_id_condition">
+		<if test="value != null and value != '' ">
+			AND c.id=#{value}
+		</if>
+	</sql>
+	
+	<select id="queryByCondition" parameterType="com.wenrc.reward.vo.RoleVo" 
+	resultType="com.wenrc.reward.bean.role.RoleBean">
+		<include refid="query_body"/>
+		<include refid="query_by_condtion"/>
+		<if test="pageSize!=null and pageSize!=0">
+			<if test="firstRowNum != null and firstRowNum != 0">
+				LIMIT #{firstRowNum},#{pageSize}
+			</if>
+			<if test="firstRowNum == null or firstRowNum == 0">
+				LIMIT 0,#{pageSize}
+			</if>
+		</if>
+	</select>
+	
+	<sql id="query_body">
+		SELECT *,case enable when 1 then '已启用' else '已停用' end enablestr FROM sys_role WHERE 1=1
+	</sql>
+	
+	<sql id="query_by_condtion">
+		<if test="name != null and name != ''">
+			AND name=#{name}
+		</if>
+		<if test="roleKey != null and roleKey != ''">
+			AND roleKey=#{roleKey}
+		</if>
+		<if test="enable != null and enable != ''">
+			and enable=#{enable}
+		</if>
+	</sql>
+</mapper> 

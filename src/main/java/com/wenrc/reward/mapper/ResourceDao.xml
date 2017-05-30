@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wenrc.reward.dao.ResourceDao">
+	<select id="queryByUserId" resultType="com.wenrc.reward.entity.Resource">
+		<include refid="query_join_body" />
+		<include refid="query_by_user_id_condition" />
+	</select>
+	
+	<select id="queryMenueByUserId" resultType="com.wenrc.reward.entity.Resource">
+		<include refid="query_join_body" />
+		<include refid="query_menue_by_user_id_condition" />
+	</select>
+	
+	<sql id="query_join_body">
+		SELECT a.*
+		FROM sys_resource a, sys_resource_role b, sys_role c, sys_user d, sys_user_role e
+		WHERE a.id = b.resId
+			AND b.roleId = c.id
+			AND d.id = e.userId
+			AND e.roleId = c.id
+	</sql>
+
+	<sql id="query_by_user_id_condition">
+		<if test="value != null and value != '' ">
+			AND d.id=#{value}
+		</if>
+	</sql>
+	
+	<sql id="query_menue_by_user_id_condition">
+			AND a.type='MENUE'
+		<if test="value != null and value != '' ">
+			AND d.id=#{value}
+		</if>
+	</sql>
+	
+	<select id="queryByCondition" parameterType="com.wenrc.reward.vo.ResourceVo" 
+	resultType="com.wenrc.reward.bean.resource.ResourceBean">
+		<include refid="query_body"/>
+		<include refid="query_by_condtion"/>
+		order by parentId,id,orderNum
+		<if test="pageSize!=null and pageSize!=0">
+			<if test="firstRowNum != null and firstRowNum != 0">
+				LIMIT #{firstRowNum},#{pageSize}
+			</if>
+			<if test="firstRowNum == null or firstRowNum == 0">
+				LIMIT 0,#{pageSize}
+			</if>
+		</if>
+	</select>
+	
+	<sql id="query_body">
+		SELECT * FROM sys_resource WHERE 1=1
+	</sql>
+	
+	<sql id="query_by_condtion">
+		<if test="name != null and name != ''">
+			AND name=#{name}
+		</if>
+		<if test="resKey != null and resKey != ''">
+			AND resKey=#{resKey}
+		</if>
+		<if test="id != null and id != ''">
+			AND id=#{id}
+		</if>
+		<if test="parentId != null and parentId != ''">
+			AND parentId=#{parentId}
+		</if>
+		<if test="type != null and type != ''">
+			and type=#{type}
+		</if>
+		<if test="level != null and level != ''">
+			and level=#{level}
+		</if>
+	</sql>
+</mapper> 

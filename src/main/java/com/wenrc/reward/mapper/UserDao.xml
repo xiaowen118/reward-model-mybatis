@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.wenrc.reward.dao.UserDao">
+
+	<insert id="insert" parameterType="com.wenrc.reward.entity.User">
+		insert into
+		sys_user(name,login_name,password)
+		values(#{name},#{loginName},#{password})
+	</insert>
+	
+	<select id="findByName" resultType="com.wenrc.reward.entity.User">
+		<include refid="query_body"/>
+		<include refid="query_by_user_name"/>
+	</select>
+	
+	<select id="queryByCondition" parameterType="com.wenrc.reward.vo.UserVo" 
+	resultType="com.wenrc.reward.bean.user.UserBean">
+		<include refid="query_body"/>
+		<include refid="query_by_condtion"/>
+		<if test="pageSize!=null and pageSize!=0">
+			<if test="firstRowNum != null and firstRowNum != 0">
+				LIMIT #{firstRowNum},#{pageSize}
+			</if>
+			<if test="firstRowNum == null or firstRowNum == 0">
+				LIMIT 0,#{pageSize}
+			</if>
+		</if>
+	</select>
+	
+	<sql id="query_body">
+		SELECT * FROM sys_user WHERE 1=1
+	</sql>
+	
+	<sql id="query_by_user_name">
+		AND name=#{name}
+	</sql>
+	
+	<sql id="query_by_condtion">
+		<if test="name != null and name != ''">
+			AND name=#{name}
+		</if>
+		<if test="mobile != null and mobile != ''">
+			AND mobile=#{mobile}
+		</if>
+		<if test="level != null and level != ''">
+			and password=#{password}
+		</if>
+	</sql>
+	
+	<select id="selectOneByCondition" resultType="com.wenrc.reward.entity.User">
+		select * from sys_user
+		<where>
+			<if test="password != null and password != ''">
+				and password=#{password}
+			</if>
+			<if test="loginName != null and loginName != ''">
+				and login_name=#{loginName}
+			</if>
+			<if test="name != null and name != ''">
+				and name=#{name}
+			</if>
+		</where>
+		limit 1
+	</select>
+
+	<select id="selectById" resultType="com.wenrc.reward.entity.User"> 
+		<![CDATA[ 
+		    select * from sys_user where id = #{id}  
+		]]>
+	</select>
+
+	<update id="updateById" parameterType="com.wenrc.reward.entity.User">
+		update sys_user set
+		name =
+		#{name} ,
+		login_name = #{loginName} ,
+		password = #{password}
+		where id =
+		#{id}
+	</update>
+
+	<delete id="deleteById">
+		delete from sys_user where id = #{id}
+	</delete>
+
+	<select id="queryAll" resultType="com.wenrc.reward.entity.User">
+		select * from sys_user
+	</select>
+
+</mapper> 
